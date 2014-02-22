@@ -17,9 +17,6 @@ public class ProtParams extends Params {
     private String pepHt;
     private String pepArea;
     private String pepSToN; 
-    private final TreeMap <String, AttValLabel> clinParamsMap;
-    
-    public ProtParams () { this.clinParamsMap = new TreeMap (); }
             
     public void setSample (Sample nSample) {
     
@@ -51,26 +48,6 @@ public class ProtParams extends Params {
         this.pepSToN = attVal;
     }
             
-    public void addClinParam (AttValLabel nAttVal) {
-        
-        if (this.clinParamsMap.containsKey(nAttVal.getName())) {
-            System.err.println ("Warning: Overwriting existing clinical param: "
-                                + nAttVal.getName ());
-        }
-        this.clinParamsMap.put (nAttVal.getName(), nAttVal);
-    }
-    
-    public AttValLabel getClinParam (String clinParamName) {
-        
-        if (this.clinParamsMap.containsKey(clinParamName)) {
-            return this.clinParamsMap.get (clinParamName);
-        } 
-        System.err.println ("Warning: Requested clinical param not found: "
-                            + clinParamName);
-        
-        return null;
-    } 
-    
     public Protein getProtein () { return this.protein; }
     
     public Sample getSample () { return this.sample; }
@@ -86,13 +63,7 @@ public class ProtParams extends Params {
     public String toString () {
         
         String temp = ""; 
-        for (String clinParamName : this.clinParamsMap.keySet ()) {
-            temp += this.getPatient ().getID () + 
-                    this.getEncounter ().getType() +
-                    clinParamName +
-                    clinParamsMap.get (clinParamName).getVal () + 
-                    clinParamsMap.get (clinParamName).getValLabel ();
-        }
+
                 
         return temp;
     }    

@@ -22,7 +22,7 @@ public class ModelContainer {
    
     private static TreeMap <String, Patient> patientMap; 
     private static TreeMap <String, Encounter> encounterMap;
-    private static ArrayList <ClinParams> clinList;
+    private static ArrayList <Params> clinList;
     private static TreeMap <String, Protein> proteinMap;
     private static TreeMap <String, ProtParams> protParamMap;
     
@@ -105,7 +105,7 @@ public class ModelContainer {
         int pKey = 1, eKey = 1, clinKey = 1, protKey = 1;
         
         for (int i = 0; i < this.clinList.size (); i++) {
-            ClinParams cParams = clinList.get (i);
+            Params cParams = clinList.get (i);
             System.out.println (pKey++ + cParams.toString());
         }
     }

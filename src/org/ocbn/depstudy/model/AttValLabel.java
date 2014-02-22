@@ -1,5 +1,7 @@
 package org.ocbn.depstudy.model;
 
+import org.ocbn.depstudy.util.GenUtil;
+
 /**
  * Extended Att-Val representation, inclusive of a label. 
  * 
@@ -16,4 +18,10 @@ public class AttValLabel extends AttVal {
     }
     
     public String getValLabel () { return this.valLabel; }
+    
+    @Override
+    public String toString () { 
+    
+        return super.toString() + GenUtil.TAB + this.getValLabel();
+    }
 }

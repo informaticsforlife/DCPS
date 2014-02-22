@@ -1,18 +1,22 @@
 package org.ocbn.depstudy.model;
 
+import org.ocbn.depstudy.util.GenUtil;
+
 /**
  * Seed for a sample class. 
  * 
  * @author ocbn
  */
 
-public class Sample implements Comparable {
+public class Sample extends Persistence implements Comparable {
 
     private String ID; 
     private String name; 
     private int dataSetOrder;
     private int blockOrder; 
     private int blockNum;
+    
+    public Sample () { setDBID (Sample.SEQ++); }
     
     public void setID (String nID) {
         
@@ -68,5 +72,32 @@ public class Sample implements Comparable {
                 return 0;
             }
         }
+    }
+
+    public String toStringHeaders () {
+       
+        String temp = "";
+        temp += "ID" + GenUtil.TAB +
+                "SampleID" + GenUtil.TAB + 
+                "Name" + GenUtil.TAB + 
+                "DataSetOrder" + GenUtil.TAB +
+                "BlockOrder" + GenUtil.TAB +
+                "BlockNum";
+        
+        return temp;
+    }
+    
+    @Override
+    public String toString () {
+        
+        String temp = "";
+        temp += this.getDBID () + GenUtil.TAB + 
+                this.getID () + GenUtil.TAB + 
+                this.getName() + GenUtil.TAB + 
+                this.getDataSetOrder() + GenUtil.TAB +
+                this.getBlockNum() + GenUtil.TAB + 
+                this.getBlockOrder();
+        
+        return temp;
     }
 }

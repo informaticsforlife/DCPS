@@ -24,4 +24,7 @@ public class AttVal {
     public String getName () { return this.name; }
     
     public String getVal () { return this.val; }
+    
+    @Override
+    public String toString () { return this.getVal (); }
 }

@@ -18,7 +18,6 @@ public class DefParams {
     public static final String LOG_FILE_PROP = "DefLogFile";
     public static final String DB_FILE_PROP = "DBFile";
     public static final String PROP_FILE_NAME_PROP = "DEP_Props";
-    public static final String PROP_DN_SAMPLE_ALL = "DNSampleAll";
 
     private static final ArrayList <String> defParamsList;
     public static final String PROP_FILE_PATH_BIF = "./Resources/DEP.properties";
@@ -34,14 +33,13 @@ public class DefParams {
             if (propsFileName == null) {
                 propsFileName = DefParams.PROP_FILE_PATH_BIF;
             }
-            props.load (new FileInputStream (propsFileName));
+            DefParams.props.load (new FileInputStream (propsFileName));
         } catch (IOException e) {
             e.printStackTrace (System.out);
         }
         defParamsList = new ArrayList <> ();
         defParamsList.add (DefParams.LOG_FILE_PROP);
         defParamsList.add(DefParams.DB_FILE_PROP);
-        defParamsList.add (DefParams.PROP_DN_SAMPLE_ALL);
     }
 
     private DefParams () {}                             //no instances allowed

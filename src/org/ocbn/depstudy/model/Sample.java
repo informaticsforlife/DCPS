@@ -10,6 +10,7 @@ import org.ocbn.depstudy.util.GenUtil;
 
 public class Sample extends Persistence implements Comparable {
 
+    private static int SEQ = 1;
     private String ID; 
     private String name; 
     private int dataSetOrder;
@@ -74,7 +75,7 @@ public class Sample extends Persistence implements Comparable {
         }
     }
 
-    public String toStringHeaders () {
+    public static String toStringHeader () {
        
         String temp = "";
         temp += "ID" + GenUtil.TAB +

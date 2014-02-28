@@ -12,7 +12,6 @@ import org.ocbn.depstudy.util.GenUtil;
 
 public abstract class Persistence {
     
-    protected static int SEQ = 1;
     private int DBID; 
     
     protected void setDBID (int nDBID) {

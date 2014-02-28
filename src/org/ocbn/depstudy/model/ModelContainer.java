@@ -1,43 +1,68 @@
 package org.ocbn.depstudy.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.TreeMap;
+import org.ocbn.depstudy.util.GenUtil;
 
 /**
- * Container/Manager class for the whole study and the loading process. 
- * - read all entries. 
- * - pull out samples and patients and creeate patient ids after reading 
- * all
- * - master spreadsheet generator, data dumper. 
- * - matching primary keys random, instead of the 
- * atts. 
- * total of 8 or so tables?
- * create headers separately. 
+ * Container class for all entities. Works hand in hand with the reader/writer.
+ * ProtParam could also use PatientID+EncounterID as unique ID
  * 
  * @author ocbn
  */
 
 public class ModelContainer {
    
+    //Entities
     private static TreeMap <String, Patient> patientMap; 
     private static TreeMap <String, Encounter> encounterMap;
-    private static ArrayList <Params> clinList;
+    private static TreeMap <String, Sample> sampleMap;
     private static TreeMap <String, Protein> proteinMap;
-    private static TreeMap <String, ProtParams> protParamMap;
+    //Joint entities
+    private static TreeMap <String, Params> clinMap;
+    private static TreeMap <String, Params> labMap;
+    private static TreeMap <String, ProtParams> proteoMap;
     
-    static {
-        
+    static {        
         ModelContainer.patientMap = new TreeMap <> ();
         ModelContainer.encounterMap = new TreeMap <> ();
-        ModelContainer.clinList = new ArrayList <> (); 
-        
+        ModelContainer.sampleMap = new TreeMap <> ();
         ModelContainer.proteinMap = new TreeMap <> ();
-        ModelContainer.protParamMap = new TreeMap <> ();
+        
+        ModelContainer.clinMap = new TreeMap <> ();
+        ModelContainer.labMap = new TreeMap <> ();
+        ModelContainer.proteoMap = new TreeMap <> ();
     } 
-    
+   
+    //a combo get-set/add
+    public static Patient getPatient (String secondaryID) {
+        
+        GenUtil.validateString(secondaryID);
+        if (patientMap.containsKey (secondaryID)) {
+            return patientMap.get (secondaryID);
+        }
+        Patient p = new Patient ();
+        p.setSecondaryID (secondaryID);
+        patientMap.put(secondaryID, p);
+        
+        return p;
+    }
+
+    public static Encounter getEncounter (String encounterType) {
+        
+        GenUtil.validateString(encounterType);
+        if (encounterMap.containsKey (encounterType)) {
+            return encounterMap.get (encounterType);
+        }
+        Encounter e = new Encounter ();
+        e.setType (encounterType);
+        encounterMap.put (encounterType, e);
+        
+        return e;
+    }
+        
     public static Protein getProtein (String proteinName) {
         
+        GenUtil.validateString(proteinName);
         if (proteinMap.containsKey (proteinName)) {
             return proteinMap.get (proteinName);
         }
@@ -47,66 +72,104 @@ public class ModelContainer {
         
         return p;
     }
+        
+    public static Sample getSample (String sampleID) {
+        
+        GenUtil.validateString(sampleID);
+        if (sampleMap.containsKey (sampleID)) {
+            return sampleMap.get (sampleID);
+        }
+        Sample s = new Sample ();
+        s.setID (sampleID);
+        sampleMap.put(sampleID, s);
+        
+        return s;
+    }
+
+    //overwrite existing, if any, used as needed. 
+    public static void setSample (Sample sample) {
+        
+        GenUtil.validateNotNull(sample);
+        ModelContainer.sampleMap.put (sample.getID(), sample);
+    }
     
-    public static ProtParams getProtParam (String sampleID) {
-    
-        if (protParamMap.containsKey (sampleID)) {
-            return protParamMap.get (sampleID);
+    public static ProtParams getProtParam (Patient p, Encounter e, Sample s, 
+                                           Protein protein) {
+        
+        GenUtil.validateNotNull(p);
+        GenUtil.validateNotNull(e);
+        GenUtil.validateNotNull(s);        
+        GenUtil.validateNotNull(protein);
+        String secondaryID = p.getSecondaryID();
+        String encounterType = e.getType();
+        String proteinName = protein.getName();      
+        if (proteoMap.containsKey (secondaryID + GenUtil.AT + encounterType + GenUtil.AT + proteinName)) {
+            return proteoMap.get (secondaryID + GenUtil.AT + encounterType + GenUtil.AT + proteinName);
         }
         ProtParams pp = new ProtParams ();
-        Sample s = new Sample ();
-        s.setName(sampleID);
-        pp.setSample (s);
-        
-        protParamMap.put (sampleID, pp);
+        pp.setPatient (p);
+        pp.setEncounter(e);
+        pp.setProtein(protein);
+        pp.setSample (s);   
+        proteoMap.put (secondaryID + GenUtil.AT + encounterType + GenUtil.AT + proteinName, pp);
         
         return pp;
     } 
     
+    public static Params getClinParam (Patient p, Encounter e) {
+    
+        GenUtil.validateNotNull(p);
+        GenUtil.validateNotNull (e);
+        String secondaryID = p.getSecondaryID();
+        String encounterType = e.getType();
+        if (clinMap.containsKey (secondaryID + GenUtil.AT + encounterType)) {
+            return clinMap.get (secondaryID + GenUtil.AT + encounterType);
+        }
+        Params cp = new Params ();
+        cp.setPatient (p);
+        cp.setEncounter(e);
+        clinMap.put (secondaryID + GenUtil.AT + encounterType, cp);
+        
+        return cp;
+    } 
+          
+    public static Params getLabParam (Patient p, Encounter e) {
+    
+        GenUtil.validateNotNull(p);
+        GenUtil.validateNotNull (e);
+        String secondaryID = p.getSecondaryID();
+        String encounterType = e.getType();
+        if (labMap.containsKey (secondaryID + GenUtil.AT + encounterType)) {
+            return labMap.get (secondaryID + GenUtil.AT + encounterType);
+        }
+        Params lp = new Params ();
+        lp.setPatient (p);
+        lp.setEncounter(e);
+        labMap.put (secondaryID + GenUtil.AT + encounterType, lp);
+        
+        return lp;
+    } 
+            
+    public static TreeMap getPatients () { return ModelContainer.patientMap; }
+    
+    public static TreeMap getEncounters () { return ModelContainer.encounterMap; }
+    
+    public static TreeMap getProteins () { return ModelContainer.proteinMap; }
+    
+    public static TreeMap getSamples () { return ModelContainer.sampleMap; }
+    
     public static TreeMap <String, ProtParams> getProtParams () { 
         
-        return ModelContainer.protParamMap; 
+        return ModelContainer.proteoMap; 
     } 
     
-    //assumes no protein existed without params
-    public static TreeMap <String, Protein> getProteins () {
+    public static TreeMap <String, Params> getClinParams () { 
         
-        Iterator iterator = protParamMap.keySet().iterator();
-        TreeMap <String, Protein> proteinMap = new TreeMap <> ();
-        while (iterator.hasNext ()) {
-            ProtParams pp = protParamMap.get ((String)iterator.next ());
-            if (!proteinMap.containsKey (pp.getProtein().getName())) {
-                proteinMap.put (pp.getProtein().getName(), pp.getProtein());
-            }
-        }
-        
-        return proteinMap;
-    }
+        return ModelContainer.clinMap; 
+    } 
     
-    public static TreeMap <String, Sample> getSamples () {
+    public static TreeMap <String, Params> getLabParams () { 
         
-        Iterator iterator = protParamMap.keySet().iterator();
-        TreeMap <String, Sample> sampleMap = new TreeMap <> ();
-        while (iterator.hasNext ()) {
-            ProtParams pp = protParamMap.get ((String)iterator.next ());
-            if (sampleMap.containsKey (pp.getSample().getID ())) {
-                throw new IllegalStateException ("Redundant samples in protein"
-                + " params.");
-            }
-            sampleMap.put (pp.getSample().getID(), pp.getSample ());           
-        }
-        
-        return sampleMap;
-    }
-        
-    private void dumpAll (String patientFileName, String encounterFileName, 
-                          String clinParamsFileName, String protParamsFileName) {
-        
-        int pKey = 1, eKey = 1, clinKey = 1, protKey = 1;
-        
-        for (int i = 0; i < this.clinList.size (); i++) {
-            Params cParams = clinList.get (i);
-            System.out.println (pKey++ + cParams.toString());
-        }
-    }
+        return ModelContainer.labMap; 
+    } 
 }

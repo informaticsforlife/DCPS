@@ -14,6 +14,7 @@ public class AttValLabel extends AttVal {
     
     public void setValLabel (String nValLabel) {
         
+        GenUtil.validateString(nValLabel);
         this.valLabel = nValLabel;
     }
     

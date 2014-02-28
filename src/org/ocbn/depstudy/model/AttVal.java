@@ -1,7 +1,9 @@
 package org.ocbn.depstudy.model;
 
+import org.ocbn.depstudy.util.GenUtil;
+
 /**
- * Generic utility class. 
+ * Generic att-val class. 
  * 
  * @author ocbn
  */
@@ -13,11 +15,13 @@ public class AttVal {
     
     public void setName (String nName) {
         
+        GenUtil.validateString(nName);
         this.name = nName; 
     }
     
     public void setVal (String nVal) {
         
+        GenUtil.validateString(nVal);
         this.val = nVal; 
     }
         

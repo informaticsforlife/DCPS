@@ -9,7 +9,8 @@ import org.ocbn.depstudy.util.GenUtil;
  */
 
 public class Encounter extends Persistence {
-
+    
+    private static int SEQ = 1;
     private String type;
     
     public Encounter () { setDBID (Encounter.SEQ++); }
@@ -25,7 +26,7 @@ public class Encounter extends Persistence {
     
     public String getType () { return this.type; }
     
-    public String toStringHeaders () {
+    public static String toStringHeaders () {
         
         String temp = "";
         

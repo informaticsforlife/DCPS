@@ -1,23 +1,31 @@
 package org.ocbn.depstudy.model;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 import org.ocbn.depstudy.util.GenUtil;
 
 /**
  * The extended join for a patient, and encounter, and clinical/lab parameters 
- * tracked.  
+ * tracked. For the DepStudy, it represents three 'persistable' objects: 
+ * Clinical Subjective/Objective observations, Lab results, proteomics study
+ * results (specialized subclass) 
  * 
  * @author ocbn
  */
 
 public class Params extends Persistence {
     
+    private static int SEQ = 1;
     private Patient patient; 
     private Encounter encounter; 
     private final TreeMap <String, AttValLabel> paramsMap = new TreeMap ();
     
-    public Params () { setDBID(ProtParams.SEQ++); }
+    public Params () {
         
+        setDBID(Params.SEQ); 
+        Params.SEQ++; 
+    }
+         
     public void setPatient (Patient nPatient) {
         
         this.patient = nPatient; 
@@ -46,7 +54,7 @@ public class Params extends Persistence {
         if (this.paramsMap.containsKey(paramName)) {
             return this.paramsMap.get (paramName);
         } 
-        System.err.println ("Warning: Requested param not found: " + paramName);
+        //System.err.println ("Warning: Requested param not found: " + paramName);
         
         return null;
     } 
@@ -60,7 +68,7 @@ public class Params extends Persistence {
         for (String paramName : this.paramsMap.keySet()) {
             temp += paramName + GenUtil.TAB;
             //if such an attribute usually have a label
-            if (this.paramsMap.get (paramName).getValLabel() != null) {
+            if (getParam (paramName).getValLabel() != null) {
                 temp += paramName + "_Label" + GenUtil.TAB;
             }
         }
@@ -69,17 +77,17 @@ public class Params extends Persistence {
     }
     
     @Override
+    //extra tabs
     public String toString () {
         
         String temp = ""; 
         temp += this.getDBID() + GenUtil.TAB + 
                 this.getPatient ().getDBID () + GenUtil.TAB + 
-                this.getEncounter ().getDBID ();
+                this.getEncounter ().getDBID () + GenUtil.TAB;
         for (String paramName : this.paramsMap.keySet()) {
-            temp += this.paramsMap.get (paramName).getVal() + GenUtil.TAB;
-            //if such an attribute usually have a label.
-            if (this.paramsMap.get (paramName).getValLabel() != null) {
-                temp +=  this.paramsMap.get (paramName).getValLabel() + GenUtil.TAB;
+            temp += getParam (paramName).getVal() + GenUtil.TAB;
+            if (getParam (paramName).getValLabel() != null) {
+                temp +=  getParam (paramName).getValLabel() + GenUtil.TAB;
             }
         }
         

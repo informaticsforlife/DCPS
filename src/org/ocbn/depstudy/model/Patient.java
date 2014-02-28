@@ -12,20 +12,22 @@ import org.ocbn.depstudy.util.GenUtil;
 
 public class Patient extends Persistence {
 
+    private static int SEQ = 1;
     private String ID; 
     private String secondaryID; 
     private PatientDemo pd; 
     
     public Patient () { 
         
-        setDBID (Patient.SEQ++);
-        setPatientID ();
+        setDBID (Patient.SEQ);
+        Patient.SEQ++;
     }
     
-    private void setPatientID () {
+    public void setPatientID (int suffix) {
         
+        GenUtil.validateNonNegativeInt(suffix);
         NumberFormat formatter = new DecimalFormat("0000");
-        setID (formatter.format(Patient.SEQ));         
+        setID ( ModelCV.BCID_PREFIX + formatter.format(suffix));         
     }
     
     public void setID (String nID) {
@@ -52,13 +54,13 @@ public class Patient extends Persistence {
     
     public PatientDemo getPatientDemo () { return pd; }
     
-    public String toStringHeaders () {
+    public static String toStringHeader () {
         
         String temp = "";
         temp += "ID" + GenUtil.TAB +
                 "PatientID" + GenUtil.TAB +
                 "SecondaryID" + GenUtil.TAB +
-                this.getPatientDemo().toStringHeaders ();
+                PatientDemo.toStringHeader ();
                 
         return temp;
     }
@@ -73,5 +75,19 @@ public class Patient extends Persistence {
                 this.getPatientDemo();
         
         return temp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        
+        Patient p2 = (Patient)o;
+        
+        return getID().equals (p2.getID());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
     }
 }

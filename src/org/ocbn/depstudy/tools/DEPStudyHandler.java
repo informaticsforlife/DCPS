@@ -6,8 +6,7 @@ import org.ocbn.depstudy.util.DefParams;
 import org.ocbn.depstudy.util.GenUtil;
 
 /**
- * Type control for all file readers/loaders. Basic factory pattern. It can 
- * be useful to run on a one-by-one basis. 
+ * Handler for reading and writing data in various formats. 
  * 
  * @author elbadr
  */
@@ -25,8 +24,8 @@ public class DEPStudyHandler {
         log = GenUtil.getDefaultLog ();
         log.println (GenUtil.getTimeStamp ());
         GenUtil.registerStart ();
-        String usageMsg = "Usage: CSVReader filePath repMode mappingFilePath";
-        String warnMsg = "WARNING: Missing command line args, using defaults";
+        String usageMsg = "Usage: DEPStudyHandler DataFilePath RepMode MappingFilePath";
+        String warnMsg = "WARNING: Missing command line args. Using defaults from PROP file.";
        
         if (args == null || args.length < 3){
             log.println (warnMsg);
@@ -41,7 +40,7 @@ public class DEPStudyHandler {
             DEPStudyRep dsRep = new DEPStudyRep(args [1]);
             dsRep.dumpEntries ();
         } catch (Throwable e) {
-            System.err.println ("Unable to process request: CSVReader.");
+            System.err.println ("Unable to process request: DEPStudyHandler.");
             e.printStackTrace (System.out);
             e.printStackTrace(log);
         } finally {
